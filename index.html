@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>משימת המבחן באנגלית: The Magic Store</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --secondary: #f5a623;
+            --success: #7ed321;
+            --bg: #f0f4f8;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #game-container {
+            max-width: 800px;
+            width: 95%;
+            background: white;
+            margin-top: 20px;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .header {
+            border-bottom: 3px solid var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 8px;
+            font-weight: bold;
+        }
+
+        .btn:hover { transform: scale(1.05); background: #357abd; }
+
+        .btn-audio {
+            background: var(--secondary);
+            font-size: 1.5rem;
+            padding: 10px 20px;
+        }
+
+        .word-card {
+            font-size: 2.5rem;
+            color: #333;
+            margin: 15px;
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            font-size: 1.5rem;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            width: 85%;
+            text-align: center;
+            direction: ltr;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-weight: bold;
+            min-height: 24px;
+            font-size: 1.2rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #eee;
+            border-radius: 6px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--success);
+            width: 0%;
+            transition: width 0.4s;
+        }
+
+        .drop-zone {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 25px;
+            gap: 15px;
+        }
+
+        .bucket {
+            border: 3px dashed var(--primary);
+            padding: 15px;
+            width: 45%;
+            min-height: 120px;
+            border-radius: 15px;
+            background: #f9f9f9;
+            cursor: pointer;
+        }
+
+        .bucket:hover { background: #eef6ff; }
+
+        .sentence-builder {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px;
+            min-height: 60px;
+        }
+
+        .word-tile {
+            background: #fff;
+            border: 2px solid var(--primary);
+            padding: 10px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            user-select: none;
+            font-weight: bold;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .word-tile:hover { background: var(--primary); color: white; }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <div class="header">
+        <h1>הרפתקת החנות הקסומה ✨</h1>
+        <p>מתאמנים למבחן ומגיעים ל-100!</p>
+    </div>
+
+    <div id="start-screen">
+        <p>בחרי שלב להתחלה:</p>
+        <button class="btn" onclick="startSpelling()">שלב 1: איות להכתבה ✍️</button><br>
+        <button class="btn" onclick="startGrammar()">שלב 2: Is או Are? 🧐</button><br>
+        <button class="btn" onclick="startSentence()">שלב 3: בנית משפטים 🏗️</button>
+    </div>
+
+    <div id="spelling-game" class="hidden">
+        <div class="progress-bar"><div id="spell-progress" class="progress-fill"></div></div>
+        <p>איך כותבים באנגלית:</p>
+        <div id="hebrew-word" class="word-card"></div>
+        <button class="btn btn-audio" onclick="speakCurrentWord()">🔊 האזנה</button><br><br>
+        <input type="text" id="spell-input" autocomplete="off" placeholder="הקלידי כאן באנגלית...">
+        <div id="spell-feedback" class="feedback"></div>
+        <button class="btn" onclick="checkSpelling()">בדיקה</button>
+        <button class="btn" style="background:#999" onclick="goBack()">חזרה</button>
+    </div>
+
+    <div id="grammar-game" class="hidden">
+        <p>האם אומרים There is או There are?</p>
+        <div id="current-gram-word" class="word-card"></div>
+        <div class="drop-zone">
+            <div class="bucket" onclick="checkGrammar('is')">
+                <h3>There is...</h3>
+                <p>ליחיד (1)</p>
+            </div>
+            <div class="bucket" onclick="checkGrammar('are')">
+                <h3>There are...</h3>
+                <p>לרבים (2+)</p>
+            </div>
+        </div>
+        <div id="gram-feedback" class="feedback"></div>
+        <button class="btn" style="margin-top:20px; background:#999" onclick="goBack()">חזרה</button>
+    </div>
+
+    <div id="sentence-game" class="hidden">
+        <p>סדרי את המילים למשפט נכון (לפי התמונות מהלוח):</p>
+        <div id="sentence-hint" style="font-size: 1.4rem; color: #444; margin-bottom: 15px; font-weight: bold;"></div>
+        <div id="sentence-slots" class="sentence-builder" style="border-bottom: 2px dashed #4a90e2; background: #fffde7;"></div>
+        <div id="sentence-options" class="sentence-builder"></div>
+        <div id="sent-feedback" class="feedback"></div>
+        <button class="btn" onclick="checkSentence()">בדוק משפט ✅</button>
+        <button class="btn" style="background: #f44336;" onclick="resetSentence()">נקה הכל 🗑️</button>
+        <button class="btn" style="background:#999" onclick="goBack()">חזרה</button>
+    </div>
+
+    <div id="win-screen" class="hidden">
+        <h2 style="color: var(--success); font-size: 2.5rem;">כל הכבוד! אלופה! 🏆</h2>
+        <p>עברת את האתגר בהצלחה. את מוכנה למבחן!</p>
+        <button class="btn" onclick="location.reload()">לשחק שוב</button>
+    </div>
+</div>
+
+<script>
+    // אוצר המילים המלא מהתמונות
+    const vocabulary = [
+        {en: 'dress', he: 'שמלה', type: 'is'},
+        {en: 'children', he: 'ילדים', type: 'are'},
+        {en: 'ice-cream', he: 'גלידה', type: 'is'},
+        {en: 'boots', he: 'מגפיים', type: 'are'},
+        {en: 'pants', he: 'מכנסיים', type: 'are'},
+        {en: 'shoes', he: 'נעליים', type: 'are'},
+        {en: 'socks', he: 'גרביים', type: 'are'},
+        {en: 'shirt', he: 'חולצה', type: 'is'},
+        {en: 'store', he: 'חנות', type: 'is'},
+        {en: 'cloud', he: 'ענן', type: 'is'},
+        {en: 'sky', he: 'שמיים', type: 'is'},
+        {en: 'wear', he: 'ללבוש'},
+        {en: 'they', he: 'הם/הן'},
+        {en: 'I want', he: 'אני רוצה'},
+        {en: 'I dont want', he: 'אני לא רוצה'},
+        {en: 'Do you want', he: 'האם את/ה רוצה?'}
+    ];
+
+    const sentences = [
+        {he: 'יש ענן בשמיים', en: ['There', 'is', 'a', 'cloud', 'in', 'the', 'sky']},
+        {he: 'יש ארבעה ילדים', en: ['There', 'are', 'four', 'children']},
+        {he: 'יש מגפיים בחנות', en: ['There', 'are', 'boots', 'in', 'the', 'store']},
+        {he: 'יש חנות גלידה', en: ['There', 'is', 'an', 'ice', 'cream', 'store']},
+        {he: 'יש שמלה ורודה בחנות', en: ['There', 'is', 'a', 'pinky', 'dress', 'in', 'the', 'store']},
+        {he: 'יש מגפיים שחורים בחנות', en: ['There', 'are', 'black', 'boots', 'in', 'the', 'store']},
+        {he: 'יש חמישה ילדים בבריכה', en: ['There', 'are', 'five', 'children', 'in', 'the', 'pool']}
+    ];
+
+    let currentWordIdx = 0;
+    let currentSentenceIdx = 0;
+    let builtSentence = [];
+    let currentMode = '';
+
+    // --- Audio ---
+    function speakCurrentWord() {
+        const word = vocabulary[currentWordIdx].en;
+        const msg = new SpeechSynthesisUtterance(word);
+        msg.lang = 'en-US';
+        msg.rate = 0.8;
+        window.speechSynthesis.speak(msg);
+    }
+
+    // --- Navigation ---
+    function showScreen(id) {
+        document.querySelectorAll('#game-container > div:not(.header)').forEach(div => div.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+    }
+
+    function goBack() { showScreen('start-screen'); }
+
+    // --- Level 1: Spelling ---
+    function startSpelling() {
+        showScreen('spelling-game');
+        currentWordIdx = 0;
+        nextSpellWord();
+    }
+
+    function nextSpellWord() {
+        if(currentWordIdx >= vocabulary.length) {
+            showScreen('win-screen');
+            return;
+        }
+        document.getElementById('hebrew-word').innerText = vocabulary[currentWordIdx].he;
+        document.getElementById('spell-input').value = '';
+        document.getElementById('spell-feedback').innerText = '';
+        document.getElementById('spell-input').focus();
+        updateProgress('spell-progress', currentWordIdx, vocabulary.length);
+    }
+
+    function checkSpelling() {
+        const input = document.getElementById('spell-input').value.trim().toLowerCase().replace("'", "");
+        const correct = vocabulary[currentWordIdx].en.toLowerCase().replace("'", "");
+        
+        if(input === correct) {
+            document.getElementById('spell-feedback').innerHTML = "<span style='color:green'>נכון מאוד! ✨</span>";
+            currentWordIdx++;
+            setTimeout(nextSpellWord, 1000);
+        } else {
+            document.getElementById('spell-feedback').innerHTML = `<span style='color:red'>נסי שוב... רמז: ${vocabulary[currentWordIdx].en[0]}...</span>`;
+        }
+    }
+
+    // --- Level 2: Grammar ---
+    function startGrammar() {
+        showScreen('grammar-game');
+        currentWordIdx = 0;
+        nextGrammarWord();
+    }
+
+    function nextGrammarWord() {
+        const gramWords = vocabulary.filter(v => v.type);
+        if(currentWordIdx >= gramWords.length) {
+            showScreen('win-screen');
+            return;
+        }
+        document.getElementById('current-gram-word').innerText = gramWords[currentWordIdx].en;
+        document.getElementById('gram-feedback').innerText = "";
+    }
+
+    function checkGrammar(choice) {
+        const gramWords = vocabulary.filter(v => v.type);
+        if(choice === gramWords[currentWordIdx].type) {
+            document.getElementById('gram-feedback').innerHTML = "<span style='color:green'>כל הכבוד!</span>";
+            currentWordIdx++;
+            setTimeout(nextGrammarWord, 800);
+        } else {
+            document.getElementById('gram-feedback').innerHTML = "<span style='color:red'>לא בדיוק. שימי לב אם זה יחיד או רבים.</span>";
+        }
+    }
+
+    // --- Level 3: Sentence Building ---
+    function startSentence() {
+        showScreen('sentence-game');
+        currentSentenceIdx = 0;
+        nextSentence();
+    }
+
+    function nextSentence() {
+        if(currentSentenceIdx >= sentences.length) {
+            showScreen('win-screen');
+            return;
+        }
+        builtSentence = [];
+        document.getElementById('sent-feedback').innerText = "";
+        document.getElementById('sentence-hint').innerText = sentences[currentSentenceIdx].he;
+        renderSentenceGame();
+    }
+
+    function renderSentenceGame() {
+        const slots = document.getElementById('sentence-slots');
+        const options = document.getElementById('sentence-options');
+        slots.innerHTML = '';
+        options.innerHTML = '';
+
+        builtSentence.forEach((w, i) => {
+            const div = document.createElement('div');
+            div.className = 'word-tile';
+            div.innerText = w;
+            slots.appendChild(div);
+        });
+
+        // הצגת האופציות שנותרו
+        const targetWords = [...sentences[currentSentenceIdx].en];
+        // סינון מילים שכבר נבחרו (בצורה שתאפשר מילים כפולות אם יש)
+        let tempBuilt = [...builtSentence];
+        const remainingWords = targetWords.filter(w => {
+            const index = tempBuilt.indexOf(w);
+            if (index > -1) {
+                tempBuilt.splice(index, 1);
+                return false;
+            }
+            return true;
+        }).sort(() => Math.random() - 0.5);
+
+        remainingWords.forEach(w => {
+            const div = document.createElement('div');
+            div.className = 'word-tile';
+            div.innerText = w;
+            div.onclick = () => {
+                builtSentence.push(w);
+                renderSentenceGame();
+            };
+            options.appendChild(div);
+        });
+    }
+
+    function resetSentence() {
+        builtSentence = [];
+        renderSentenceGame();
+    }
+
+    function checkSentence() {
+        const correct = sentences[currentSentenceIdx].en.join(' ');
+        const current = builtSentence.join(' ');
+        
+        if(correct === current) {
+            document.getElementById('sent-feedback').innerHTML = "<span style='color:green'>משפט מושלם! 🌟</span>";
+            setTimeout(() => {
+                currentSentenceIdx++;
+                nextSentence();
+            }, 1200);
+        } else {
+            document.getElementById('sent-feedback').innerHTML = "<span style='color:red'>הסדר לא נכון, נסי שוב.</span>";
+        }
+    }
+
+    function updateProgress(id, current, total) {
+        const percent = (current / total) * 100;
+        document.getElementById(id).style.width = percent + '%';
+    }
+
+    document.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            if(!document.getElementById('spelling-game').classList.contains('hidden')) checkSpelling();
+        }
+    });
+</script>
+
+</body>
+</html>
