@@ -3,76 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English Master - Training Edition 🎓</title>
+    <title>English Master - Direction Fixed 🚀</title>
     <style>
         :root { --primary: #4a90e2; --secondary: #ff9f43; --success: #28c76f; --danger: #ff4757; --bg: #f8faff; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; }
         #game-container { max-width: 850px; width: 95%; background: white; margin: 20px; padding: 25px; border-radius: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; }
         .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 20px; margin-bottom: 25px; }
+        
         .btn { background: var(--primary); color: white; border: none; padding: 14px 28px; font-size: 1.2rem; border-radius: 15px; cursor: pointer; margin: 8px; font-weight: bold; transition: 0.3s; }
         .btn:hover { transform: translateY(-2px); opacity: 0.9; }
+
+        /* תיקון כיוון למילים באנגלית */
+        .english-text { direction: ltr; display: inline-block; unicode-bidi: bidi-override; }
+        
         .word-card { font-size: 3rem; color: #333; margin: 15px; font-weight: 800; }
-        input[type="text"] { font-size: 1.6rem; padding: 15px; border: 3px solid #eee; border-radius: 15px; width: 85%; text-align: center; direction: ltr; outline: none; }
-        .training-msg { color: var(--danger); font-size: 1.4rem; font-weight: bold; background: #fff0f0; padding: 10px; border-radius: 10px; margin: 10px 0; border: 2px solid var(--danger); display: none; }
-        .sentence-builder { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: 15px; min-height: 80px; padding: 15px; border-radius: 20px; background: #f0f7ff; }
+        .detective-word { font-size: 3.5rem; letter-spacing: 8px; color: var(--primary); font-family: 'Courier New', Courier, monospace; direction: ltr; display: inline-block; }
+        
+        .letter-pool { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px; direction: ltr; }
+        .letter-btn { background: #eee; border: 2px solid #ccc; padding: 12px 18px; font-size: 1.5rem; border-radius: 10px; cursor: pointer; font-weight: bold; width: 55px; }
+        
+        /* תיקון כיוון לבניית משפטים */
+        .sentence-builder { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: 15px; min-height: 80px; padding: 15px; border-radius: 20px; background: #f0f7ff; direction: ltr; }
         #sentence-slots { border: 2px dashed var(--primary); background: #fff; }
-        .word-tile { background: white; border: 2px solid var(--primary); padding: 12px 20px; border-radius: 12px; cursor: pointer; font-weight: bold; user-select: none; }
+        
+        .word-tile { background: white; border: 2px solid var(--primary); padding: 12px 20px; border-radius: 12px; cursor: pointer; font-weight: bold; user-select: none; direction: ltr; }
+        
         .progress-bar { width: 100%; height: 12px; background: #eee; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
         .progress-fill { height: 100%; background: var(--success); width: 0%; transition: 0.4s; }
         .hidden { display: none; }
         .feedback { font-size: 1.5rem; font-weight: bold; margin: 15px; height: 35px; }
+        
         .memory-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 20px auto; max-width: 600px; }
-        .memory-card { aspect-ratio: 1; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 1rem; padding: 5px; }
-        .memory-card.flipped { background: white; color: var(--primary); border: 2px solid var(--primary); }
+        .memory-card { aspect-ratio: 1; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 1rem; }
+        .memory-card.flipped { background: white; color: var(--primary); border: 2px solid var(--primary); direction: ltr; }
     </style>
 </head>
 <body>
 
 <div id="game-container">
     <div class="header">
-        <h1>הפסקת משחק באנגלית! 🎈</h1>
-        <p>מתאמנים, מתקנים ומנצחים!</p>
+        <h1>English Master Class 🎓</h1>
+        <p>מתאמנים נכון ומנצחים!</p>
     </div>
 
     <div id="start-screen">
-        <h3>בחרו את האתגר שלכם:</h3>
-        <button class="btn" onclick="initSpelling()">✍️ הכתבה (כולל אימון)</button>
+        <h3>בחרו משחק:</h3>
+        <button class="btn" onclick="initSpelling()">✍️ הכתבה</button>
+        <button class="btn" onclick="initDetective()">🔍 בלש האותיות</button>
         <button class="btn" onclick="initGrammar()">🧐 Is או Are?</button>
-        <button class="btn" onclick="initSentence()">🏗️ בונים משפטים</button>
-        <button class="btn" onclick="initMemory()">🧠 משחק הזיכרון</button>
+        <button class="btn" onclick="initSentence()">🏗️ בניית משפטים</button>
+        <button class="btn" onclick="initMemory()">🧠 זיכרון</button>
+    </div>
+
+    <div id="detective-game" class="hidden">
+        <p>השלימו את האותיות החסרות במילה (משמאל לימין):</p>
+        <div id="detective-hebrew" class="word-card"></div>
+        <div id="detective-word-display" class="detective-word"></div>
+        <div id="letter-pool" class="letter-pool"></div>
+        <div id="detective-feedback" class="feedback"></div>
+        <button class="btn" style="background:#999" onclick="goBack()">תפריט</button>
     </div>
 
     <div id="spelling-game" class="hidden">
         <div class="progress-bar"><div id="spell-progress" class="progress-fill"></div></div>
-        <div id="training-box" class="training-msg">
-            המילה הנכונה היא: <span id="correct-answer-display" style="text-decoration: underline;"></span><br>
-            <small>הקלידו אותה פעמיים כדי להמשיך!</small>
-        </div>
-        <p id="spelling-instruction">איך כותבים באנגלית:</p>
         <div id="hebrew-word" class="word-card"></div>
-        <button class="btn" style="background:var(--secondary)" onclick="speakCurrentWord()">🔊 שמע</button><br><br>
-        <input type="text" id="spell-input" placeholder="הקלידו כאן..." autocomplete="off">
+        <input type="text" id="spell-input" style="direction: ltr;" placeholder="Type here..." autocomplete="off">
         <div id="spell-feedback" class="feedback"></div>
-        <button class="btn" id="check-btn" onclick="checkSpelling()">בדיקה</button>
+        <button class="btn" onclick="checkSpelling()">בדיקה</button>
         <button class="btn" style="background:#999" onclick="goBack()">תפריט</button>
     </div>
 
-    <div id="grammar-game" class="hidden">
-        <div class="word-card" id="gram-word"></div>
-        <div style="display:flex; justify-content:center; gap:15px;">
-            <button class="btn" style="padding:30px" onclick="checkGrammar('is')">There is</button>
-            <button class="btn" style="padding:30px" onclick="checkGrammar('are')">There are</button>
-        </div>
-        <div id="gram-feedback" class="feedback"></div>
-        <button class="btn" style="background:#999" onclick="goBack()">חזרה</button>
-    </div>
-
     <div id="sentence-game" class="hidden">
+        <p>סדרו את המילים משמאל לימין:</p>
         <div id="sentence-hint" style="font-size: 1.5rem; color: #444; font-weight: bold; margin-bottom:10px;"></div>
         <div id="sentence-slots" class="sentence-builder"></div>
         <div id="sentence-options" class="sentence-builder"></div>
         <div id="sent-feedback" class="feedback"></div>
         <button class="btn" onclick="checkSentence()">בדיקה ✅</button>
+        <button class="btn" style="background:#999" onclick="goBack()">חזרה</button>
+    </div>
+
+    <div id="grammar-game" class="hidden">
+        <div id="gram-word" class="word-card english-text"></div>
+        <div style="display:flex; justify-content:center; gap:15px; direction: ltr;">
+            <button class="btn" onclick="checkGrammar('is')">There is</button>
+            <button class="btn" onclick="checkGrammar('are')">There are</button>
+        </div>
+        <div id="gram-feedback" class="feedback"></div>
         <button class="btn" style="background:#999" onclick="goBack()">חזרה</button>
     </div>
 
@@ -82,36 +99,31 @@
     </div>
 
     <div id="win-screen" class="hidden">
-        <h2 style="color: var(--success); font-size: 3rem;">כל הכבוד! אלופים! 🏆</h2>
+        <h2 style="color: var(--success); font-size: 3rem;">כל הכבוד! 🏆</h2>
         <button class="btn" onclick="location.reload()">שחקו שוב</button>
     </div>
 </div>
 
 <script>
-    // הגדרות בסיסיות (אוצר מילים ומשפטים מהלוח)
     const baseVocabulary = [
         {en: 'dress', he: 'שמלה', type: 'is'}, {en: 'children', he: 'ילדים', type: 'are'},
         {en: 'ice-cream', he: 'גלידה', type: 'is'}, {en: 'boots', he: 'מגפיים', type: 'are'},
         {en: 'pants', he: 'מכנסיים', type: 'are'}, {en: 'shoes', he: 'נעליים', type: 'are'},
         {en: 'socks', he: 'גרביים', type: 'are'}, {en: 'shirt', he: 'חולצה', type: 'is'},
         {en: 'store', he: 'חנות', type: 'is'}, {en: 'they', he: 'הם/הן'},
-        {en: 'Do you want?', he: 'האם את/ה רוצה?'}, {en: 'I don\'t want', he: 'אני לא רוצה'},
-        {en: 'I want', he: 'אני רוצה'}, {en: 'cloud', he: 'ענן', type: 'is'},
-        {en: 'sky', he: 'שמיים', type: 'is'}, {en: 'wear', he: 'ללבוש'}
+        {en: 'I want', he: 'אני רוצה'}, {en: 'I don\'t want', he: 'אני לא רוצה'},
+        {en: 'cloud', he: 'ענן', type: 'is'}, {en: 'sky', he: 'שמיים', type: 'is'}
     ];
 
     const baseSentences = [
-        {he: 'יש ארבעה ילדים', en: ['There', 'are', 'four', 'children']},
         {he: 'יש מגפיים בחנות', en: ['There', 'are', 'boots', 'in', 'the', 'store']},
         {he: 'יש חנות גלידה', en: ['There', 'is', 'an', 'ice', 'cream', 'store']},
-        {he: 'יש חמישה ילדים בבריכה (לפי הלוח)', en: ['There', 'is', 'five', 'children', 'in', 'the', 'pool']}
+        {he: 'יש חמישה ילדים בבריכה', en: ['There', 'is', 'five', 'children', 'in', 'the', 'pool']}
     ];
 
-    let gameVocab = [], gameSentences = [], currentIdx = 0, builtSentence = [], poolWords = [];
-    let isTraining = false;
-    let trainingCount = 0;
+    let gameVocab = [], currentIdx = 0, builtSentence = [], poolWords = [];
+    let detectiveCurrentWord = "", detectiveMissingIndices = [];
 
-    function clean(str) { return str.toLowerCase().replace(/[^a-z0-9]/g, "").trim(); }
     function shuffle(array) {
         let arr = [...array];
         for (let i = arr.length - 1; i > 0; i--) {
@@ -127,83 +139,80 @@
     }
     function goBack() { showScreen('start-screen'); }
 
-    // --- Spelling with Training Logic ---
-    function initSpelling() { 
-        gameVocab = shuffle(baseVocabulary); 
-        currentIdx = 0; 
-        isTraining = false;
-        showScreen('spelling-game'); 
-        nextSpell(); 
+    // --- Detective Logic (Direction Fixed) ---
+    function initDetective() {
+        gameVocab = shuffle(baseVocabulary);
+        currentIdx = 0;
+        showScreen('detective-game');
+        nextDetective();
     }
 
+    function nextDetective() {
+        if(currentIdx >= gameVocab.length) return showScreen('win-screen');
+        detectiveCurrentWord = gameVocab[currentIdx].en;
+        detectiveMissingIndices = [];
+        let numToHide = detectiveCurrentWord.length > 5 ? 3 : 2;
+        while(detectiveMissingIndices.length < numToHide) {
+            let rand = Math.floor(Math.random() * detectiveCurrentWord.length);
+            if(detectiveCurrentWord[rand] !== " " && detectiveCurrentWord[rand] !== "-" && !detectiveMissingIndices.includes(rand)) {
+                detectiveMissingIndices.push(rand);
+            }
+        }
+        renderDetective();
+    }
+
+    function renderDetective() {
+        document.getElementById('detective-hebrew').innerText = gameVocab[currentIdx].he;
+        let displayStr = "";
+        for(let i=0; i<detectiveCurrentWord.length; i++) {
+            displayStr += detectiveMissingIndices.includes(i) ? "_" : detectiveCurrentWord[i];
+        }
+        document.getElementById('detective-word-display').innerText = displayStr;
+        
+        let pool = detectiveMissingIndices.map(i => detectiveCurrentWord[i]);
+        const alphabet = "abcdefghijklmnopqrstuvwxyz";
+        while(pool.length < 8) {
+            let r = alphabet[Math.floor(Math.random() * 26)];
+            if(!pool.includes(r)) pool.push(r);
+        }
+        pool = shuffle(pool);
+        const pc = document.getElementById('letter-pool');
+        pc.innerHTML = "";
+        pool.forEach(l => {
+            let b = document.createElement('button'); b.className = 'letter-btn'; b.innerText = l;
+            b.onclick = () => {
+                let found = false;
+                for(let i=0; i<detectiveMissingIndices.length; i++) {
+                    if(detectiveCurrentWord[detectiveMissingIndices[i]].toLowerCase() === l.toLowerCase()) {
+                        detectiveMissingIndices.splice(i, 1); found = true; break;
+                    }
+                }
+                if(found) { renderDetective(); if(detectiveMissingIndices.length === 0) { currentIdx++; setTimeout(nextDetective, 800); } }
+            };
+            pc.appendChild(b);
+        });
+    }
+
+    // --- Other Games (Directions Verified) ---
+    function initSpelling() { gameVocab = shuffle(baseVocabulary); currentIdx = 0; showScreen('spelling-game'); nextSpell(); }
     function nextSpell() {
         if(currentIdx >= gameVocab.length) return showScreen('win-screen');
-        isTraining = false;
-        document.getElementById('training-box').style.display = 'none';
         document.getElementById('hebrew-word').innerText = gameVocab[currentIdx].he;
-        document.getElementById('spell-input').value = '';
-        document.getElementById('spell-feedback').innerText = '';
-        document.getElementById('spell-progress').style.width = (currentIdx/gameVocab.length)*100 + '%';
-        document.getElementById('spell-input').focus();
+        document.getElementById('spell-input').value = ""; document.getElementById('spell-progress').style.width = (currentIdx/gameVocab.length)*100 + '%';
     }
-
     function checkSpelling() {
-        const inputRaw = document.getElementById('spell-input').value;
-        const input = clean(inputRaw);
-        const target = clean(gameVocab[currentIdx].en);
-
-        if (!isTraining) {
-            // בדיקה רגילה
-            if(input === target) {
-                document.getElementById('spell-feedback').innerHTML = "🟢 מעולה!";
-                currentIdx++; 
-                setTimeout(nextSpell, 800);
-            } else {
-                // כניסה למצב אימון
-                isTraining = true;
-                trainingCount = 0;
-                document.getElementById('training-box').style.display = 'block';
-                document.getElementById('correct-answer-display').innerText = gameVocab[currentIdx].en;
-                document.getElementById('spell-feedback').innerHTML = "🔴 לא בדיוק... בואו נתאמן!";
-                document.getElementById('spell-input').value = '';
-                document.getElementById('spell-input').focus();
-            }
-        } else {
-            // בדיקה במצב אימון
-            if (input === target) {
-                trainingCount++;
-                if (trainingCount < 2) {
-                    document.getElementById('spell-feedback').innerHTML = "נכון! עוד פעם אחת...";
-                    document.getElementById('spell-input').value = '';
-                } else {
-                    document.getElementById('spell-feedback').innerHTML = "מעולה, עכשיו המילה תישמר בזיכרון!";
-                    isTraining = false;
-                    currentIdx++;
-                    setTimeout(nextSpell, 1000);
-                }
-            } else {
-                document.getElementById('spell-feedback').innerHTML = "הקלידו בדיוק כמו שכתוב בתיבה האדומה";
-            }
+        if(document.getElementById('spell-input').value.toLowerCase().replace(/[^a-z]/g, "") === gameVocab[currentIdx].en.toLowerCase().replace(/[^a-z]/g, "")) {
+            currentIdx++; nextSpell();
         }
     }
 
-    function speakCurrentWord() {
-        let msg = new SpeechSynthesisUtterance(gameVocab[currentIdx].en);
-        msg.lang = 'en-US'; window.speechSynthesis.speak(msg);
-    }
-
-    // --- Logic for other games ---
     function initGrammar() { gameVocab = shuffle(baseVocabulary.filter(v => v.type)); currentIdx = 0; showScreen('grammar-game'); nextGram(); }
     function nextGram() {
         if(currentIdx >= gameVocab.length) return showScreen('win-screen');
         document.getElementById('gram-word').innerText = gameVocab[currentIdx].en;
-        document.getElementById('gram-feedback').innerText = "";
     }
     function checkGrammar(choice) {
-        if(choice === gameVocab[currentIdx].type) {
-            document.getElementById('gram-feedback').innerText = "נכון! ⭐";
-            currentIdx++; setTimeout(nextGram, 700);
-        } else { document.getElementById('gram-feedback').innerText = "שימו לב לכמות..."; }
+        if(choice === gameVocab[currentIdx].type) { currentIdx++; nextGram(); }
     }
 
     function initSentence() { gameSentences = shuffle(baseSentences); currentIdx = 0; showScreen('sentence-game'); nextSent(); }
@@ -211,51 +220,44 @@
         if(currentIdx >= gameSentences.length) return showScreen('win-screen');
         builtSentence = []; poolWords = shuffle(gameSentences[currentIdx].en);
         document.getElementById('sentence-hint').innerText = gameSentences[currentIdx].he;
-        document.getElementById('sent-feedback').innerText = "";
         renderSentence();
     }
     function renderSentence() {
-        const slots = document.getElementById('sentence-slots'), options = document.getElementById('sentence-options');
-        slots.innerHTML = ''; options.innerHTML = '';
+        const slots = document.getElementById('sentence-slots'), opts = document.getElementById('sentence-options');
+        slots.innerHTML = ''; opts.innerHTML = '';
         builtSentence.forEach((w, i) => {
-            let div = document.createElement('div'); div.className = 'word-tile'; div.innerText = w;
-            div.onclick = () => { poolWords.push(builtSentence.splice(i, 1)[0]); renderSentence(); };
-            slots.appendChild(div);
+            let d = document.createElement('div'); d.className = 'word-tile'; d.innerText = w;
+            d.onclick = () => { poolWords.push(builtSentence.splice(i, 1)[0]); renderSentence(); };
+            slots.appendChild(d);
         });
         poolWords.forEach((w, i) => {
-            let div = document.createElement('div'); div.className = 'word-tile'; div.innerText = w;
-            div.onclick = () => { builtSentence.push(poolWords.splice(i, 1)[0]); renderSentence(); };
-            options.appendChild(div);
+            let d = document.createElement('div'); d.className = 'word-tile'; d.innerText = w;
+            d.onclick = () => { builtSentence.push(poolWords.splice(i, 1)[0]); renderSentence(); };
+            opts.appendChild(d);
         });
     }
     function checkSentence() {
-        if(builtSentence.join(' ') === gameSentences[currentIdx].en.join(' ')) {
-            document.getElementById('sent-feedback').innerText = "משפט מעולה! ⭐";
-            currentIdx++; setTimeout(nextSent, 1200);
-        } else { document.getElementById('sent-feedback').innerText = "נסו לשנות את הסדר"; }
+        if(builtSentence.join(' ') === gameSentences[currentIdx].en.join(' ')) { currentIdx++; nextSent(); }
     }
 
     function initMemory() {
         showScreen('memory-game'); const grid = document.getElementById('memory-grid'); grid.innerHTML = '';
         let items = []; shuffle(baseVocabulary).slice(0, 6).forEach(v => { items.push({t: v.en, p: v.he}, {t: v.he, p: v.en}); });
-        items = shuffle(items);
+        items = shuffle(items); let m1 = null;
         items.forEach(item => {
-            let card = document.createElement('div'); card.className = 'memory-card'; card.innerText = '❓';
-            card.onclick = () => {
-                if(card.classList.contains('flipped') || mem1?.c === card) return;
-                card.innerText = item.t; card.classList.add('flipped');
-                if(!mem1) mem1 = {c: card, i: item};
+            let c = document.createElement('div'); c.className = 'memory-card'; c.innerText = '❓';
+            c.onclick = () => {
+                if(c.classList.contains('flipped') || m1?.c === c) return;
+                c.innerText = item.t; c.classList.add('flipped');
+                if(!m1) m1 = {c, i: item};
                 else {
-                    if(mem1.i.p === item.t) mem1 = null;
-                    else { let c1 = mem1.c; setTimeout(() => { c1.innerText = '❓'; card.innerText = '❓'; c1.classList.remove('flipped'); card.classList.remove('flipped'); }, 1000); mem1 = null; }
+                    if(m1.i.p === item.t) m1 = null;
+                    else { let c1 = m1.c; setTimeout(() => { c1.innerText = '❓'; c.innerText = '❓'; c1.classList.remove('flipped'); c.classList.remove('flipped'); }, 800); m1 = null; }
                 }
             };
-            grid.appendChild(card);
+            grid.appendChild(c);
         });
     }
-
-    let mem1 = null;
-    document.addEventListener('keypress', (e) => { if (e.key === 'Enter' && !document.getElementById('spelling-game').classList.contains('hidden')) checkSpelling(); });
 </script>
 </body>
 </html>
