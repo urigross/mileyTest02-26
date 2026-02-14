@@ -4,7 +4,147 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>English Flashcards - כרטיסיות הצלחה</title>
+    <style><!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentence Doctor - מרפאת המשפטים</title>
     <style>
+        :root { --primary: #00b894; --secondary: #0984e3; --danger: #d63031; --bg: #dfe6e9; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; }
+        #game-container { max-width: 800px; width: 95%; background: white; margin: 20px; padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
+        .header { background: var(--primary); color: white; padding: 15px; border-radius: 20px; margin-bottom: 20px; }
+        .word-card { font-size: 2.2rem; color: #333; margin: 15px; font-weight: bold; }
+        .english-area { direction: ltr; font-size: 2.5rem; margin: 20px; padding: 15px; border: 3px solid #eee; border-radius: 15px; min-height: 50px; }
+        .keyboard { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; direction: ltr; }
+        .key { background: white; border: 2px solid var(--secondary); padding: 10px 15px; font-size: 1.3rem; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .key:hover { background: var(--secondary); color: white; }
+        .btn { background: var(--secondary); color: white; border: none; padding: 12px 25px; font-size: 1.1rem; border-radius: 12px; cursor: pointer; margin: 10px; }
+        .feedback { font-size: 1.3rem; font-weight: bold; margin: 15px; height: 30px; }
+        .hidden { display: none; }
+        .broken { color: var(--danger); text-decoration: underline wavy; }
+        .fixed { color: var(--primary); }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <div class="header">
+        <h1>מרפאת המשפטים 🚑</h1>
+        <p>המשפטים "חולים"! בואו נעזור להם להבריא ולהיות נכונים.</p>
+    </div>
+
+    <div id="game-area">
+        <div id="instruction" style="font-size: 1.3rem; margin-bottom: 10px;"></div>
+        <div id="broken-sentence" class="word-card broken"></div>
+        <p>הקלידו או בחרו את המילה הנכונה (משמאל לימין):</p>
+        <div id="target-area" class="english-area"></div>
+        <div id="options" class="keyboard"></div>
+        <div id="feedback" class="feedback"></div>
+        <button class="btn" onclick="checkAnswer()">בדוק אותי ✅</button>
+        <button class="btn" style="background:#999" onclick="resetCurrent()">נקה הכל 🗑️</button>
+    </div>
+
+    <div id="win-screen" class="hidden">
+        <h2 style="color: var(--primary); font-size: 2.5rem;">כל הכבוד דוקטור! 🏆</h2>
+        <p>ריפאת את כל המשפטים!</p>
+        <button class="btn" onclick="location.reload()">לשחק שוב</button>
+    </div>
+</div>
+
+<script>
+    // משפטים המבוססים על הטעויות החדשות
+    const cases = [
+        { 
+            hint: "תיקון: האותיות ב-'אתה' התבלבלו", 
+            wrong: "aoy want", 
+            correct: ["You", "want"],
+            pool: ["You", "aoy", "want", "wont", "Yo"],
+            he: "אתה רוצה"
+        },
+        { 
+            hint: "תיקון: ב'ישנם' משתמשים ב-There", 
+            wrong: "Dere are boots", 
+            correct: ["There", "are", "boots"],
+            pool: ["There", "are", "Dere", "boots", "is"],
+            he: "ישנם מגפיים"
+        },
+        { 
+            hint: "תיקון: הצבע תמיד בא לפני השמיים", 
+            wrong: "sky blue", 
+            correct: ["blue", "sky"],
+            pool: ["blue", "sky", "bloe", "skies"],
+            he: "שמיים כחולים"
+        },
+        { 
+            hint: "תיקון: איות המילה בית ספר", 
+            wrong: "scool", 
+            correct: ["school"],
+            pool: ["school", "scool", "shool", "skool"],
+            he: "בית ספר"
+        },
+        { 
+            hint: "תיקון: אני לא רוצה (שימי לב לגרש)", 
+            wrong: "I dont want", 
+            correct: ["I", "don't", "want"],
+            pool: ["I", "dont", "don't", "want", "wont"],
+            he: "אני לא רוצה"
+        }
+    ];
+
+    let currentCaseIdx = 0;
+    let built = [];
+
+    function initCase() {
+        if (currentCaseIdx >= cases.length) {
+            document.getElementById('game-area').classList.add('hidden');
+            document.getElementById('win-screen').classList.remove('hidden');
+            return;
+        }
+        
+        const c = cases[currentCaseIdx];
+        document.getElementById('instruction').innerText = c.hint + " (" + c.he + ")";
+        document.getElementById('broken-sentence').innerText = c.wrong;
+        document.getElementById('feedback').innerText = "";
+        built = [];
+        render();
+    }
+
+    function render() {
+        const area = document.getElementById('target-area');
+        area.innerHTML = built.join(" ");
+        
+        const options = document.getElementById('options');
+        options.innerHTML = "";
+        cases[currentCaseIdx].pool.forEach(word => {
+            let k = document.createElement('div');
+            k.className = 'key';
+            k.innerText = word;
+            k.onclick = () => { built.push(word); render(); };
+            options.appendChild(k);
+        });
+    }
+
+    function resetCurrent() { built = []; render(); }
+
+    function checkAnswer() {
+        const result = built.join(" ").toLowerCase().replace("'", "");
+        const target = cases[currentCaseIdx].correct.join(" ").toLowerCase().replace("'", "");
+        
+        if (result === target) {
+            document.getElementById('feedback').innerHTML = "<span style='color:green'>המשפט הבריא! ✨</span>";
+            currentCaseIdx++;
+            setTimeout(initCase, 1200);
+        } else {
+            document.getElementById('feedback').innerHTML = "<span style='color:red'>המשפט עדיין קצת חולה, נסה שוב...</span>";
+        }
+    }
+
+    initCase();
+</script>
+</body>
+</html>
         :root { --primary: #4a90e2; --success: #28c76f; --bg: #f0f2f5; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow: hidden; }
         
