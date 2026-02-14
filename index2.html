@@ -3,28 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English Flashcards - כרטיסיות הצלחה</title>
-    <style><!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sentence Doctor - מרפאת המשפטים</title>
+    <title>Sentence Doctor 9.1 - Fixed</title>
     <style>
-        :root { --primary: #00b894; --secondary: #0984e3; --danger: #d63031; --bg: #dfe6e9; }
+        :root { --primary: #00b894; --secondary: #0984e3; --danger: #d63031; --bg: #f5f6fa; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; }
         #game-container { max-width: 800px; width: 95%; background: white; margin: 20px; padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
         .header { background: var(--primary); color: white; padding: 15px; border-radius: 20px; margin-bottom: 20px; }
         .word-card { font-size: 2.2rem; color: #333; margin: 15px; font-weight: bold; }
-        .english-area { direction: ltr; font-size: 2.5rem; margin: 20px; padding: 15px; border: 3px solid #eee; border-radius: 15px; min-height: 50px; }
-        .keyboard { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; direction: ltr; }
-        .key { background: white; border: 2px solid var(--secondary); padding: 10px 15px; font-size: 1.3rem; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .key:hover { background: var(--secondary); color: white; }
-        .btn { background: var(--secondary); color: white; border: none; padding: 12px 25px; font-size: 1.1rem; border-radius: 12px; cursor: pointer; margin: 10px; }
-        .feedback { font-size: 1.3rem; font-weight: bold; margin: 15px; height: 30px; }
+        .english-area { direction: ltr; font-size: 2.2rem; margin: 20px; padding: 15px; border: 3px solid #eee; border-radius: 15px; min-height: 60px; background: #fffde7; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .keyboard { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; direction: ltr; margin-top: 20px; }
+        .key { background: white; border: 2px solid var(--secondary); padding: 10px 18px; font-size: 1.2rem; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .key:hover { background: var(--secondary); color: white; transform: scale(1.05); }
+        .btn { background: var(--secondary); color: white; border: none; padding: 12px 25px; font-size: 1.1rem; border-radius: 12px; cursor: pointer; margin: 10px; font-weight: bold; }
+        .feedback { font-size: 1.4rem; font-weight: bold; margin: 15px; height: 35px; }
         .hidden { display: none; }
         .broken { color: var(--danger); text-decoration: underline wavy; }
-        .fixed { color: var(--primary); }
     </style>
 </head>
 <body>
@@ -32,13 +25,12 @@
 <div id="game-container">
     <div class="header">
         <h1>מרפאת המשפטים 🚑</h1>
-        <p>המשפטים "חולים"! בואו נעזור להם להבריא ולהיות נכונים.</p>
+        <p>מתקנים את הטעויות ומנצחים!</p>
     </div>
 
     <div id="game-area">
-        <div id="instruction" style="font-size: 1.3rem; margin-bottom: 10px;"></div>
+        <div id="instruction" style="font-size: 1.3rem; margin-bottom: 10px; font-weight: bold; color: #2d3436;"></div>
         <div id="broken-sentence" class="word-card broken"></div>
-        <p>הקלידו או בחרו את המילה הנכונה (משמאל לימין):</p>
         <div id="target-area" class="english-area"></div>
         <div id="options" class="keyboard"></div>
         <div id="feedback" class="feedback"></div>
@@ -48,62 +40,65 @@
 
     <div id="win-screen" class="hidden">
         <h2 style="color: var(--primary); font-size: 2.5rem;">כל הכבוד דוקטור! 🏆</h2>
-        <p>ריפאת את כל המשפטים!</p>
+        <p>ריפאת את כל המשפטים והם עכשיו בריאים לגמרי.</p>
         <button class="btn" onclick="location.reload()">לשחק שוב</button>
     </div>
 </div>
 
 <script>
-    // משפטים המבוססים על הטעויות החדשות
     const cases = [
         { 
             hint: "תיקון: האותיות ב-'אתה' התבלבלו", 
             wrong: "aoy want", 
             correct: ["You", "want"],
-            pool: ["You", "aoy", "want", "wont", "Yo"],
+            pool: ["You", "aoy", "want", "wont"],
             he: "אתה רוצה"
         },
         { 
             hint: "תיקון: ב'ישנם' משתמשים ב-There", 
             wrong: "Dere are boots", 
             correct: ["There", "are", "boots"],
-            pool: ["There", "are", "Dere", "boots", "is"],
+            pool: ["There", "are", "Dere", "boots"],
             he: "ישנם מגפיים"
         },
         { 
-            hint: "תיקון: הצבע תמיד בא לפני השמיים", 
+            hint: "תיקון: הצבע תמיד בא לפני החפץ", 
             wrong: "sky blue", 
             correct: ["blue", "sky"],
-            pool: ["blue", "sky", "bloe", "skies"],
+            pool: ["blue", "sky", "bloe"],
             he: "שמיים כחולים"
         },
         { 
             hint: "תיקון: איות המילה בית ספר", 
             wrong: "scool", 
             correct: ["school"],
-            pool: ["school", "scool", "shool", "skool"],
+            pool: ["school", "scool", "shool"],
             he: "בית ספר"
         },
         { 
             hint: "תיקון: אני לא רוצה (שימי לב לגרש)", 
             wrong: "I dont want", 
             correct: ["I", "don't", "want"],
-            pool: ["I", "dont", "don't", "want", "wont"],
+            pool: ["I", "dont", "don't", "want"],
             he: "אני לא רוצה"
         }
     ];
 
-    let currentCaseIdx = 0;
+    let currentIdx = 0;
     let built = [];
 
+    // פונקציית ניקוי חזקה להשוואה
+    function superClean(str) {
+        return str.toLowerCase().replace(/[^a-z]/g, "").trim();
+    }
+
     function initCase() {
-        if (currentCaseIdx >= cases.length) {
+        if (currentIdx >= cases.length) {
             document.getElementById('game-area').classList.add('hidden');
             document.getElementById('win-screen').classList.remove('hidden');
             return;
         }
-        
-        const c = cases[currentCaseIdx];
+        const c = cases[currentIdx];
         document.getElementById('instruction').innerText = c.hint + " (" + c.he + ")";
         document.getElementById('broken-sentence').innerText = c.wrong;
         document.getElementById('feedback').innerText = "";
@@ -117,7 +112,11 @@
         
         const options = document.getElementById('options');
         options.innerHTML = "";
-        cases[currentCaseIdx].pool.forEach(word => {
+        
+        // ערבוב האופציות בכל פעם כדי למנוע ניחוש לפי מיקום
+        const shuffledPool = [...cases[currentIdx].pool].sort(() => Math.random() - 0.5);
+        
+        shuffledPool.forEach(word => {
             let k = document.createElement('div');
             k.className = 'key';
             k.innerText = word;
@@ -129,129 +128,23 @@
     function resetCurrent() { built = []; render(); }
 
     function checkAnswer() {
-        const result = built.join(" ").toLowerCase().replace("'", "");
-        const target = cases[currentCaseIdx].correct.join(" ").toLowerCase().replace("'", "");
+        if (built.length === 0) return;
+
+        const resultStr = superClean(built.join(""));
+        const targetStr = superClean(cases[currentIdx].correct.join(""));
         
-        if (result === target) {
-            document.getElementById('feedback').innerHTML = "<span style='color:green'>המשפט הבריא! ✨</span>";
-            currentCaseIdx++;
-            setTimeout(initCase, 1200);
+        console.log("Checking:", resultStr, "vs", targetStr); // לבדיקה בקונסול
+
+        if (resultStr === targetStr) {
+            document.getElementById('feedback').innerHTML = "<span style='color:green'>המשפט הבריא! ✨ כל הכבוד!</span>";
+            currentIdx++;
+            setTimeout(initCase, 1000);
         } else {
-            document.getElementById('feedback').innerHTML = "<span style='color:red'>המשפט עדיין קצת חולה, נסה שוב...</span>";
+            document.getElementById('feedback').innerHTML = "<span style='color:red'>המשפט עדיין זקוק לטיפול... נסו שוב!</span>";
         }
     }
 
     initCase();
 </script>
-</body>
-</html>
-        :root { --primary: #4a90e2; --success: #28c76f; --bg: #f0f2f5; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow: hidden; }
-        
-        .container { width: 100%; max-width: 400px; padding: 20px; text-align: center; }
-        .stats { margin-bottom: 20px; font-weight: bold; color: #555; }
-        
-        /* עיצוב הכרטיסייה */
-        .card-container { perspective: 1000px; width: 300px; height: 400px; margin: 0 auto; cursor: pointer; }
-        .card { width: 100%; height: 100%; position: relative; transition: transform 0.6s; transform-style: preserve-3d; }
-        .card.flipped { transform: rotateY(180deg); }
-        
-        .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 2px solid #ddd; background: white; }
-        .card-back { transform: rotateY(180deg); background: #fffde7; }
-        
-        .word { font-size: 3rem; font-weight: bold; color: var(--primary); margin: 20px; }
-        .english-word { font-size: 3.5rem; color: #2c3e50; direction: ltr; }
-        
-        .controls { margin-top: 30px; display: flex; justify-content: center; gap: 15px; }
-        .btn { padding: 15px 25px; border: none; border-radius: 50px; font-size: 1.1rem; font-weight: bold; cursor: pointer; color: white; transition: 0.2s; }
-        .btn-know { background: var(--success); }
-        .btn-study { background: #ff9f43; }
-        .btn-audio { background: #999; margin-top: 10px; }
-
-        .finished { display: none; margin-top: 50px; }
-        .finished h2 { color: var(--success); }
-    </style>
-</head>
-<body>
-
-<div class="container" id="game">
-    <div class="stats">נשארו עוד <span id="remaining">0</span> מילים</div>
-    
-    <div class="card-container" onclick="flipCard()">
-        <div class="card" id="card">
-            <div class="card-face card-front">
-                <div class="word" id="hebrew-text">טוען...</div>
-                <small>לחצי כדי לראות את התשובה</small>
-            </div>
-            <div class="card-face card-back">
-                <div class="english-word" id="english-text">...</div>
-                <button class="btn btn-audio" onclick="speak(event)">🔊 שמע</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="controls">
-        <button class="btn btn-study" onclick="nextCard(false)">עוד אימון 🔁</button>
-        <button class="btn btn-know" onclick="nextCard(true)">אני יודעת! ✅</button>
-    </div>
-</div>
-
-<div class="container finished" id="win">
-    <h2>כל הכבוד! 🏆</h2>
-    <p>סיימת את כל המילים שצריך לזכור!</p>
-    <button class="btn" style="background: var(--primary)" onclick="location.reload()">להתחיל מחדש</button>
-</div>
-
-<script>
-    // רשימת המילים המלאה, כולל המילים הקשות
-    let words = [
-        {h: "חולצה", e: "shirt"}, {h: "חנות", e: "store"}, {h: "ללבוש", e: "wear"},
-        {h: "הם / הן", e: "they"}, {h: "ענן", e: "cloud"}, {h: "אני רוצה", e: "I want"},
-        {h: "אני לא רוצה", e: "I don't want"}, {h: "שמלה", e: "dress"}, {h: "גלידה", e: "ice-cream"},
-        {h: "ילדים", e: "children"}, {h: "מגפיים", e: "boots"}, {h: "מכנסיים", e: "pants"},
-        {h: "נעליים", e: "shoes"}, {h: "גרביים", e: "socks"}, {h: "שמיים", e: "sky"}
-    ];
-
-    // ערבוב ראשוני
-    words = words.sort(() => Math.random() - 0.5);
-    
-    let currentIndex = 0;
-
-    function updateCard() {
-        if (words.length === 0) {
-            document.getElementById('game').style.display = 'none';
-            document.getElementById('win').style.display = 'block';
-            return;
-        }
-        document.getElementById('remaining').innerText = words.length;
-        document.getElementById('hebrew-text').innerText = words[currentIndex].h;
-        document.getElementById('english-text').innerText = words[currentIndex].e;
-        document.getElementById('card').classList.remove('flipped');
-    }
-
-    function flipCard() {
-        document.getElementById('card').classList.toggle('flipped');
-    }
-
-    function nextCard(known) {
-        if (known) {
-            words.splice(currentIndex, 1); // הסרת מילה שיודעים
-        } else {
-            currentIndex = (currentIndex + 1) % words.length; // העברה לסוף הערמה
-        }
-        updateCard();
-    }
-
-    function speak(event) {
-        event.stopPropagation(); // מונע מהכרטיס להתהפך בלחיצה על השמע
-        const msg = new SpeechSynthesisUtterance(words[currentIndex].e);
-        msg.lang = 'en-US';
-        msg.rate = 0.8;
-        window.speechSynthesis.speak(msg);
-    }
-
-    updateCard();
-</script>
-
 </body>
 </html>
