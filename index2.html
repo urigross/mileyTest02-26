@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sentence Doctor 9.1 - Fixed</title>
+    <title>Sentence Doctor - Level Up!</title>
     <style>
         :root { --primary: #00b894; --secondary: #0984e3; --danger: #d63031; --bg: #f5f6fa; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; }
-        #game-container { max-width: 800px; width: 95%; background: white; margin: 20px; padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
-        .header { background: var(--primary); color: white; padding: 15px; border-radius: 20px; margin-bottom: 20px; }
-        .word-card { font-size: 2.2rem; color: #333; margin: 15px; font-weight: bold; }
+        #game-container { max-width: 850px; width: 95%; background: white; margin: 20px; padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
+        .header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 20px; border-radius: 20px; margin-bottom: 20px; }
+        .word-card { font-size: 2rem; color: #333; margin: 15px; font-weight: bold; }
         .english-area { direction: ltr; font-size: 2.2rem; margin: 20px; padding: 15px; border: 3px solid #eee; border-radius: 15px; min-height: 60px; background: #fffde7; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 10px; }
         .keyboard { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; direction: ltr; margin-top: 20px; }
         .key { background: white; border: 2px solid var(--secondary); padding: 10px 18px; font-size: 1.2rem; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
@@ -24,8 +24,8 @@
 
 <div id="game-container">
     <div class="header">
-        <h1>מרפאת המשפטים 🚑</h1>
-        <p>מתקנים את הטעויות ומנצחים!</p>
+        <h1>מרפאת המשפטים: שלב 2 🩺</h1>
+        <p>מילים חדשות, משפטים חדשים - בואי נראה אותך!</p>
     </div>
 
     <div id="game-area">
@@ -39,55 +39,55 @@
     </div>
 
     <div id="win-screen" class="hidden">
-        <h2 style="color: var(--primary); font-size: 2.5rem;">כל הכבוד דוקטור! 🏆</h2>
-        <p>ריפאת את כל המשפטים והם עכשיו בריאים לגמרי.</p>
+        <h2 style="color: var(--primary); font-size: 2.5rem;">אלופת האנגלית! 🏆</h2>
+        <p>עברת את כל המשפטים החדשים בהצלחה!</p>
         <button class="btn" onclick="location.reload()">לשחק שוב</button>
     </div>
 </div>
 
 <script>
+    // אוצר מילים מורחב ומשפטים ממוקדי טעויות
     const cases = [
         { 
-            hint: "תיקון: האותיות ב-'אתה' התבלבלו", 
-            wrong: "aoy want", 
-            correct: ["You", "want"],
-            pool: ["You", "aoy", "want", "wont"],
-            he: "אתה רוצה"
-        },
-        { 
-            hint: "תיקון: ב'ישנם' משתמשים ב-There", 
-            wrong: "Dere are boots", 
-            correct: ["There", "are", "boots"],
-            pool: ["There", "are", "Dere", "boots"],
-            he: "ישנם מגפיים"
-        },
-        { 
-            hint: "תיקון: הצבע תמיד בא לפני החפץ", 
+            hint: "תיקון: הצבע בא לפני החפץ", 
             wrong: "sky blue", 
             correct: ["blue", "sky"],
             pool: ["blue", "sky", "bloe"],
             he: "שמיים כחולים"
         },
         { 
-            hint: "תיקון: איות המילה בית ספר", 
-            wrong: "scool", 
-            correct: ["school"],
-            pool: ["school", "scool", "shool"],
-            he: "בית ספר"
+            hint: "תיקון: איות של 'אתה' ו'רוצה'", 
+            wrong: "aoy wont a bag", 
+            correct: ["You", "want", "a", "bag"],
+            pool: ["You", "want", "aoy", "wont", "bag"],
+            he: "אתה רוצה תיק"
         },
         { 
-            hint: "תיקון: אני לא רוצה (שימי לב לגרש)", 
-            wrong: "I dont want", 
-            correct: ["I", "don't", "want"],
-            pool: ["I", "dont", "don't", "want"],
-            he: "אני לא רוצה"
+            hint: "תיקון: ישנו (יחיד) תיק גדול", 
+            wrong: "There are big bag", 
+            correct: ["There", "is", "a", "big", "bag"],
+            pool: ["There", "is", "are", "big", "bag", "a"],
+            he: "יש תיק גדול"
+        },
+        { 
+            hint: "תיקון: איות בית ספר", 
+            wrong: "the scool is big", 
+            correct: ["The", "school", "is", "big"],
+            pool: ["The", "school", "scool", "is", "big"],
+            he: "בית הספר גדול"
+        },
+        { 
+            hint: "משימה: מה הם רוצים ללבוש?", 
+            wrong: "they wont wear a hat", 
+            correct: ["They", "want", "to", "wear", "a", "hat"],
+            pool: ["They", "want", "wear", "to", "a", "hat", "wont"],
+            he: "הם רוצים ללבוש כובע"
         }
     ];
 
     let currentIdx = 0;
     let built = [];
 
-    // פונקציית ניקוי חזקה להשוואה
     function superClean(str) {
         return str.toLowerCase().replace(/[^a-z]/g, "").trim();
     }
@@ -109,13 +109,9 @@
     function render() {
         const area = document.getElementById('target-area');
         area.innerHTML = built.join(" ");
-        
         const options = document.getElementById('options');
         options.innerHTML = "";
-        
-        // ערבוב האופציות בכל פעם כדי למנוע ניחוש לפי מיקום
         const shuffledPool = [...cases[currentIdx].pool].sort(() => Math.random() - 0.5);
-        
         shuffledPool.forEach(word => {
             let k = document.createElement('div');
             k.className = 'key';
@@ -129,18 +125,14 @@
 
     function checkAnswer() {
         if (built.length === 0) return;
-
         const resultStr = superClean(built.join(""));
         const targetStr = superClean(cases[currentIdx].correct.join(""));
-        
-        console.log("Checking:", resultStr, "vs", targetStr); // לבדיקה בקונסול
-
         if (resultStr === targetStr) {
-            document.getElementById('feedback').innerHTML = "<span style='color:green'>המשפט הבריא! ✨ כל הכבוד!</span>";
+            document.getElementById('feedback').innerHTML = "<span style='color:green'>נכון מאוד! המשכת הלאה ✨</span>";
             currentIdx++;
             setTimeout(initCase, 1000);
         } else {
-            document.getElementById('feedback').innerHTML = "<span style='color:red'>המשפט עדיין זקוק לטיפול... נסו שוב!</span>";
+            document.getElementById('feedback').innerHTML = "<span style='color:red'>כמעט... שימי לב לסדר או לאיות!</span>";
         }
     }
 
