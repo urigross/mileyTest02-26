@@ -3,29 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sentence Doctor 3.0 - Iron Version</title>
+    <title>Sentence Doctor 4.0 - Clear & Focused</title>
     <style>
         :root { --primary: #00b894; --secondary: #0984e3; --danger: #d63031; --bg: #f5f6fa; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; padding-bottom: 50px; display: flex; flex-direction: column; align-items: center; }
         #game-container { max-width: 850px; width: 95%; background: white; margin: 20px auto; padding: 25px; border-radius: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; }
         .header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 20px; border-radius: 20px; margin-bottom: 20px; }
         
-        /* אזור ההוראות (תכלת) */
-        .instruction-box { background: #e1f5fe; padding: 15px; border-radius: 15px; margin-bottom: 15px; min-height: 50px; }
-        .instruction-text { font-weight: bold; font-size: 1.2rem; color: #2d3436; margin: 0; }
-        .translation-hint { font-size: 1.1rem; color: #636e72; margin-top: 5px; font-style: italic; }
+        .instruction-box { background: #e1f5fe; padding: 15px; border-radius: 15px; margin-bottom: 15px; }
+        .instruction-text { font-weight: bold; font-size: 1.2rem; color: #2d3436; }
+        .translation-hint { font-size: 1.3rem; color: #d63031; font-weight: bold; margin-top: 5px; }
 
-        /* אזור המשפט השבור */
-        .broken-area { min-height: 80px; display: flex; align-items: center; justify-content: center; margin: 15px 0; }
-        .broken-sentence { font-size: 2.2rem; color: var(--danger); text-decoration: underline wavy; font-weight: bold; }
+        .broken-area { min-height: 60px; display: flex; align-items: center; justify-content: center; margin: 10px 0; }
+        .broken-sentence { font-size: 2rem; color: var(--danger); text-decoration: underline wavy; font-weight: bold; }
 
-        /* אזור הבנייה (צהבהב) */
         .english-area { direction: ltr; font-size: 2.2rem; margin: 20px 0; padding: 20px; border: 3px solid #eee; border-radius: 15px; min-height: 70px; background: #fffde7; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 12px; }
         
-        /* מקלדת המילים */
-        .keyboard { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; direction: ltr; min-height: 100px; padding: 10px; }
-        .key { background: white; border: 2px solid var(--secondary); padding: 12px 20px; font-size: 1.3rem; border-radius: 12px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.2s; }
-        .key:hover { background: var(--secondary); color: white; transform: translateY(-2px); }
+        .keyboard { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; direction: ltr; min-height: 80px; }
+        /* הסרת צביעה כחולה - עיצוב לחצנים נקי */
+        .key { background: white; border: 2px solid var(--secondary); padding: 12px 20px; font-size: 1.3rem; border-radius: 12px; cursor: pointer; font-weight: bold; transition: background 0.1s; }
+        .key:active { background: #eee; } /* צבע זמני רק ברגע הלחיצה */
         
         .feedback { font-size: 1.5rem; font-weight: bold; margin: 15px; height: 40px; }
         .btn { background: var(--secondary); color: white; border: none; padding: 15px 35px; font-size: 1.2rem; border-radius: 15px; cursor: pointer; font-weight: bold; margin: 10px; }
@@ -36,13 +33,13 @@
 
 <div id="game-container">
     <div class="header">
-        <h1>מרפאת המשפטים: דוקטור הילה 🩺</h1>
-        <p>בואו נרפא את כל המשפטים המבולבלים!</p>
+        <h1>המרפאה של הילה 🩺</h1>
+        <p>מתקנים את המשפטים ומנצחים את המבחן!</p>
     </div>
 
     <div id="game-area">
         <div class="instruction-box">
-            <p id="instruction-title" class="instruction-text">טוען משפט...</p>
+            <p id="instruction-title" class="instruction-text"></p>
             <div id="hint-box" class="translation-hint"></div>
         </div>
 
@@ -50,21 +47,18 @@
             <div id="broken-sentence" class="broken-sentence"></div>
         </div>
 
-        <div id="target-area" class="english-area">לחצי על המילים למטה כדי להתחיל...</div>
-        
+        <div id="target-area" class="english-area"></div>
         <div id="options" class="keyboard"></div>
-        
         <div id="feedback" class="feedback"></div>
         
         <div style="margin-top: 10px;">
             <button class="btn" onclick="checkAnswer()">בדקו אותי ✅</button>
-            <button class="btn" style="background:#999" onclick="resetCurrent()">נקה הכל 🗑️</button>
+            <button class="btn" style="background:#999;" onclick="resetCurrent()">נקה הכל 🗑️</button>
         </div>
     </div>
 
     <div id="win-screen" class="hidden">
-        <h2 style="color: var(--primary); font-size: 3rem;">אלופת העולם באנגלית! 🏆</h2>
-        <p style="font-size: 1.5rem;">ריפאת את כל המשפטים בהצלחה!</p>
+        <h2 style="color: var(--primary); font-size: 3rem;">אלופה! הציון שלך הוא 100! 🏆</h2>
         <button class="btn" onclick="location.reload()">לשחק שוב</button>
     </div>
 </div>
@@ -72,51 +66,42 @@
 <script>
     const cases = [
         { 
-            hint: "תיקון: הצבע בא לפני החפץ", 
-            wrong: "sky blue", 
-            correct: ["blue", "sky"],
-            pool: ["blue", "sky", "bloe"],
-            he: "שמיים כחולים",
-            dict: ""
-        },
-        { 
-            hint: "תיקון: איות של 'אתה' ו'רוצה'", 
-            wrong: "aoy wont a bag", 
+            hint: "תיקון: YOU = אתה", 
+            wrong: "uoy wont a bad", 
             correct: ["You", "want", "a", "bag"],
-            pool: ["You", "want", "a", "aoy", "wont", "bag"],
+            pool: ["You", "uoy", "want", "wont", "bag", "bad", "a"],
             he: "אתה רוצה תיק",
-            dict: "זכרי: You = אתה"
+            dict: "זכרי: You (אתה), Bag (תיק - עם G בסוף)"
         },
         { 
-            hint: "תיקון: ישנו (יחיד) תיק גדול", 
-            wrong: "There are big bag", 
-            correct: ["There", "is", "a", "big", "bag"],
-            pool: ["There", "is", "are", "big", "bag", "a"],
-            he: "יש תיק גדול",
-            dict: "is = אחד | a = מילה שמסמנת אחד"
+            hint: "תיקון: THERE IS = יש (לא THE)", 
+            wrong: "The is blue sky", 
+            correct: ["There", "is", "a", "blue", "sky"],
+            pool: ["There", "The", "is", "blue", "sky", "a"],
+            he: "יש שמיים כחולים",
+            dict: "זכרי: There (יש), Blue (כחול) בא לפני השמיים"
         },
         { 
-            hint: "תיקון: איות בית ספר", 
-            wrong: "the scool is big", 
-            correct: ["The", "school", "is", "big"],
-            pool: ["The", "school", "scool", "is", "big"],
-            he: "בית הספר גדול",
-            dict: "זכרי: School כותבים עם CH"
+            hint: "תיקון: SCHOOL", 
+            wrong: "I want a scool bag", 
+            correct: ["I", "want", "a", "school", "bag"],
+            pool: ["I", "want", "school", "scool", "bag", "a"],
+            he: "אני רוצה תיק בית ספר",
+            dict: "זכרי: School עם CH, Want עם A"
         },
         { 
-            hint: "משימה: מה הם רוצים ללבוש?", 
+            hint: "משימה: הם רוצים ללבוש כובע", 
             wrong: "they wont wear a hat", 
             correct: ["They", "want", "to", "wear", "a", "hat"],
             pool: ["They", "want", "wear", "to", "a", "hat", "wont"],
             he: "הם רוצים ללבוש כובע",
-            dict: "They = הם | Wear = ללבוש"
+            dict: "They = הם"
         }
     ];
 
     let currentIdx = 0;
     let built = [];
 
-    // ניקוי אותיות בלבד להשוואה
     function superClean(str) {
         return str.toLowerCase().replace(/[^a-z]/g, "").trim();
     }
@@ -127,10 +112,9 @@
             document.getElementById('win-screen').classList.remove('hidden');
             return;
         }
-        
         const c = cases[currentIdx];
         document.getElementById('instruction-title').innerText = c.hint + " (" + c.he + ")";
-        document.getElementById('hint-box').innerText = c.dict || "בהצלחה!";
+        document.getElementById('hint-box').innerText = c.dict;
         document.getElementById('broken-sentence').innerText = c.wrong;
         document.getElementById('feedback').innerText = "";
         built = [];
@@ -139,28 +123,17 @@
 
     function render() {
         const area = document.getElementById('target-area');
-        if (built.length === 0) {
-            area.innerText = "בחרי מילים...";
-            area.style.color = "#999";
-        } else {
-            area.innerText = built.join(" ");
-            area.style.color = "#333";
-        }
+        area.innerText = built.length === 0 ? "סדרי את המשפט כאן..." : built.join(" ");
+        area.style.color = built.length === 0 ? "#999" : "#333";
         
         const options = document.getElementById('options');
         options.innerHTML = "";
-        
-        // יצירת מחסן מילים מעורבב
         const shuffledPool = [...cases[currentIdx].pool].sort(() => Math.random() - 0.5);
-        
         shuffledPool.forEach(word => {
             let k = document.createElement('div');
             k.className = 'key';
             k.innerText = word;
-            k.onclick = () => { 
-                built.push(word); 
-                render(); 
-            };
+            k.onclick = () => { built.push(word); render(); };
             options.appendChild(k);
         });
     }
@@ -169,22 +142,18 @@
 
     function checkAnswer() {
         if (built.length === 0) return;
-        
         const resultStr = superClean(built.join(""));
         const targetStr = superClean(cases[currentIdx].correct.join(""));
-        
         if (resultStr === targetStr) {
-            document.getElementById('feedback').innerHTML = "<span style='color:var(--primary)'>משפט בריא לגמרי! ✨</span>";
+            document.getElementById('feedback').innerHTML = "<span style='color:var(--primary)'>משפט מושלם! 🌟</span>";
             currentIdx++;
             setTimeout(initCase, 1000);
         } else {
-            document.getElementById('feedback').innerHTML = "<span style='color:var(--danger)'>עדיין זקוק לטיפול... נסי שוב!</span>";
+            document.getElementById('feedback').innerHTML = "<span style='color:var(--danger)'>שימי לב לאיות של המילים... נסי שוב!</span>";
         }
     }
 
-    // הפעלה כשהדף נטען
     window.onload = initCase;
 </script>
-
 </body>
 </html>
