@@ -35,4 +35,116 @@
         <div id="broken-sentence" class="word-card broken"></div>
         <div id="target-area" class="english-area"></div>
         <div id="options" class="keyboard"></div>
-        <div id="feedback" class="
+        <div id="feedback" class="feedback"></div>
+        <button class="btn" onclick="checkAnswer()">בדוק אותי ✅</button>
+        <button class="btn" style="background:#999" onclick="resetCurrent()">נקה הכל 🗑️</button>
+    </div>
+
+    <div id="win-screen" class="hidden">
+        <h2 style="color: var(--primary); font-size: 2.5rem;">אלופת האנגלית! 🏆</h2>
+        <p>עברת את כל המשפטים החדשים בהצלחה!</p>
+        <button class="btn" onclick="location.reload()">לשחק שוב</button>
+    </div>
+</div>
+
+<script>
+    const cases = [
+        { 
+            hint: "תיקון: הצבע בא לפני החפץ", 
+            wrong: "sky blue", 
+            correct: ["blue", "sky"],
+            pool: ["blue", "sky", "bloe"],
+            he: "שמיים כחולים",
+            dict: ""
+        },
+        { 
+            hint: "תיקון: איות של 'אתה' ו'רוצה'", 
+            wrong: "aoy wont a bag", 
+            correct: ["You", "want", "a", "bag"],
+            pool: ["You", "want", "a", "aoy", "wont", "bag"], // הוספתי את האות a החסרה!
+            he: "אתה רוצה תיק",
+            dict: "זכרי: You = אתה"
+        },
+        { 
+            hint: "תיקון: ישנו (יחיד) תיק גדול", 
+            wrong: "There are big bag", 
+            correct: ["There", "is", "a", "big", "bag"],
+            pool: ["There", "is", "are", "big", "bag", "a"],
+            he: "יש תיק גדול",
+            dict: "is = אחד | are = הרבה"
+        },
+        { 
+            hint: "תיקון: איות בית ספר", 
+            wrong: "the scool is big", 
+            correct: ["The", "school", "is", "big"],
+            pool: ["The", "school", "scool", "is", "big"],
+            he: "בית הספר גדול",
+            dict: ""
+        },
+        { 
+            hint: "משימה: מה הם רוצים ללבוש?", 
+            wrong: "they wont wear a hat", 
+            correct: ["They", "want", "to", "wear", "a", "hat"],
+            pool: ["They", "want", "wear", "to", "a", "hat", "wont"],
+            he: "הם רוצים ללבוש כובע",
+            dict: "They = הם | Wear = ללבוש"
+        }
+    ];
+
+    let currentIdx = 0;
+    let built = [];
+
+    function superClean(str) {
+        return str.toLowerCase().replace(/[^a-z]/g, "").trim();
+    }
+
+    function initCase() {
+        if (currentIdx >= cases.length) {
+            document.getElementById('game-area').classList.add('hidden');
+            document.getElementById('win-screen').classList.remove('hidden');
+            return;
+        }
+        const c = cases[currentIdx];
+        document.getElementById('instruction').innerText = c.hint + " (" + c.he + ")";
+        document.getElementById('hint-box').innerText = c.dict;
+        document.getElementById('hint-box').style.display = c.dict ? "inline-block" : "none";
+        document.getElementById('broken-sentence').innerText = c.wrong;
+        document.getElementById('feedback').innerText = "";
+        built = [];
+        render();
+    }
+
+    function render() {
+        const area = document.getElementById('target-area');
+        area.innerHTML = built.join(" ");
+        const options = document.getElementById('options');
+        options.innerHTML = "";
+        const shuffledPool = [...cases[currentIdx].pool].sort(() => Math.random() - 0.5);
+        shuffledPool.forEach(word => {
+            let k = document.createElement('div');
+            k.className = 'key';
+            k.innerText = word;
+            k.onclick = () => { built.push(word); render(); };
+            options.appendChild(k);
+        });
+    }
+
+    function resetCurrent() { built = []; render(); }
+
+    function checkAnswer() {
+        if (built.length === 0) return;
+        const resultStr = superClean(built.join(""));
+        const targetStr = superClean(cases[currentIdx].correct.join(""));
+        if (resultStr === targetStr) {
+            document.getElementById('feedback').innerHTML = "<span style='color:green'>נכון מאוד! המשכת הלאה ✨</span>";
+            currentIdx++;
+            setTimeout(initCase, 1000);
+        } else {
+            document.getElementById('feedback').innerHTML = "<span style='color:red'>כמעט... שימי לב לסדר או לאיות!</span>";
+        }
+    }
+
+    initCase();
+</script>
+</body>
+</html>
