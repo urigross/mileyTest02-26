@@ -2,129 +2,136 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מיילי: המרפאה למשפטים 6.0</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>מיילי: המרפאה למשפטים 7.0</title>
     <style>
         :root { --primary: #00b894; --secondary: #0984e3; --danger: #d63031; --bg: #f5f6fa; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; padding-bottom: 50px; display: flex; flex-direction: column; align-items: center; }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background: var(--bg); 
+            margin: 0; 
+            padding-top: env(safe-area-inset-top); /* תמיכה באייפון 16 */
+            display: flex; flex-direction: column; align-items: center; 
+        }
         
-        /* תפריט המבורגר סודי ללוג */
-        #menu-btn { position: fixed; top: 15px; right: 15px; font-size: 30px; background: none; border: none; cursor: pointer; z-index: 1001; color: white; }
-        #log-panel { position: fixed; top: 0; right: -320px; width: 300px; height: 100%; background: white; box-shadow: -5px 0 15px rgba(0,0,0,0.2); transition: 0.4s; z-index: 1000; padding: 20px; overflow-y: auto; text-align: right; }
+        /* כפתור המבורגר משופר למובייל */
+        #menu-btn { 
+            position: fixed; 
+            top: calc(10px + env(safe-area-inset-top)); 
+            right: 15px; 
+            font-size: 24px; 
+            background: rgba(0, 0, 0, 0.6); 
+            color: white; 
+            border: none; 
+            padding: 10px 15px; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            z-index: 1001;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        #log-panel { 
+            position: fixed; top: 0; right: -320px; width: 300px; height: 100%; 
+            background: white; box-shadow: -5px 0 15px rgba(0,0,0,0.2); 
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            z-index: 1000; padding: 20px; overflow-y: auto; text-align: right; 
+        }
         #log-panel.open { right: 0; }
-        #log-content { font-size: 0.85rem; line-height: 1.5; color: #333; }
 
-        #game-container { max-width: 850px; width: 95%; background: white; margin: 20px auto; padding: 25px; border-radius: 35px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center; position: relative; overflow: hidden; }
-        .header { background: linear-gradient(135deg, #00b894, #00cec9); color: white; padding: 25px; border-radius: 25px; margin-bottom: 25px; position: relative; }
+        #game-container { max-width: 850px; width: 92%; background: white; margin: 20px auto; padding: 25px; border-radius: 35px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center; }
+        .header { background: linear-gradient(135deg, #00b894, #00cec9); color: white; padding: 25px; border-radius: 25px; margin-bottom: 20px; }
         
-        /* מד התקדמות */
-        .progress-container { width: 100%; background: #eee; height: 10px; border-radius: 5px; margin-top: 15px; overflow: hidden; }
-        .progress-fill { height: 100%; background: #fdcb6e; width: 0%; transition: 0.5s; }
+        .progress-container { width: 100%; background: rgba(255,255,255,0.3); height: 10px; border-radius: 5px; margin-top: 15px; }
+        .progress-fill { height: 100%; background: #fdcb6e; width: 0%; transition: 0.5s; border-radius: 5px; }
 
-        .instruction-box { background: #e1f5fe; padding: 18px; border-radius: 20px; margin-bottom: 20px; border-right: 5px solid var(--secondary); }
-        .instruction-text { font-weight: bold; font-size: 1.3rem; color: #2d3436; margin: 0; }
-        .hint-text { color: var(--danger); font-weight: 800; font-size: 1.1rem; margin-top: 5px; }
+        .instruction-box { background: #e1f5fe; padding: 15px; border-radius: 20px; margin-bottom: 15px; border-right: 6px solid var(--secondary); }
+        .broken-sentence { font-size: 1.8rem; color: var(--danger); text-decoration: underline wavy; font-weight: bold; margin: 15px 0; }
 
-        .broken-sentence { font-size: 2.2rem; color: var(--danger); text-decoration: underline wavy; font-weight: bold; margin: 20px 0; min-height: 40px; }
-
-        /* אזור הבנייה הצהוב */
-        .english-area { direction: ltr; font-size: 2.3rem; margin: 20px 0; padding: 25px; border: 3px dashed #ddd; border-radius: 20px; min-height: 80px; background: #fffde7; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .english-area { direction: ltr; font-size: 2rem; margin: 15px 0; padding: 20px; border: 3px dashed #ddd; border-radius: 20px; min-height: 80px; background: #fffde7; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 10px; }
         
-        .keyboard { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; direction: ltr; padding: 10px; }
-        .key { background: white; border: 2px solid #ddd; padding: 12px 22px; font-size: 1.4rem; border-radius: 15px; cursor: pointer; font-weight: bold; transition: 0.2s; color: #2d3436; }
-        .key:hover { border-color: var(--secondary); transform: translateY(-3px); box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
-        .key:active { background: #f0f0f0; }
+        .keyboard { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; direction: ltr; }
+        .key { background: white; border: 2px solid #eee; padding: 10px 18px; font-size: 1.2rem; border-radius: 12px; cursor: pointer; font-weight: bold; color: #2d3436; box-shadow: 0 3px 0 #ddd; }
+        .key:active { transform: translateY(2px); box-shadow: none; background: #f9f9f9; }
 
-        .feedback { font-size: 1.6rem; font-weight: bold; margin: 20px; height: 40px; }
-        .btn { background: var(--secondary); color: white; border: none; padding: 16px 40px; font-size: 1.3rem; border-radius: 18px; cursor: pointer; font-weight: bold; margin: 10px; box-shadow: 0 4px 15px rgba(9, 132, 227, 0.3); }
+        .feedback { font-size: 1.4rem; font-weight: bold; margin: 15px; height: 30px; }
+        .btn { background: var(--secondary); color: white; border: none; padding: 14px 30px; font-size: 1.1rem; border-radius: 15px; cursor: pointer; font-weight: bold; margin: 5px; }
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<button id="menu-btn" onclick="toggleLog()">☰</button>
+<button id="menu-btn" onclick="toggleLog()">☰ LOG</button>
 
 <div id="log-panel">
-    <h3 style="border-bottom: 2px solid #eee; padding-bottom: 10px;">📋 יומן המרפאה (LOG)</h3>
-    <div id="log-content">מיילי עוד לא התחילה בטיפולים...</div>
-    <button class="btn" style="padding: 10px; width: 100%; margin-top: 20px; font-size: 1rem; background: #636e72;" onclick="toggleLog()">סגור יומן</button>
+    <h3>📋 היומן של מיילי</h3>
+    <div id="log-content" style="font-size: 0.8rem;">ממתין לתחילת המשחק...</div>
+    <button class="btn" style="width:100%; margin-top:20px; background:#636e72;" onclick="toggleLog()">סגור</button>
 </div>
 
 <div id="game-container">
     <div class="header">
         <h1 style="margin:0;">המרפאה של דוקטור מיילי 🩺</h1>
-        <p style="margin:5px 0 0 0;">שלב: <span id="level-name">מתמחה צעירה</span></p>
+        <p id="level-title">רמה: מתמחה בכירה</p>
         <div class="progress-container"><div id="progress-fill" class="progress-fill"></div></div>
     </div>
 
     <div id="game-area">
         <div class="instruction-box">
-            <p id="instruction-title" class="instruction-text"></p>
-            <div id="hint-box" class="hint-text"></div>
+            <p id="instruction-title" style="font-weight:bold; font-size:1.2rem; margin:0;"></p>
+            <p id="hint-box" style="color:var(--danger); font-size:1rem; margin:5px 0 0 0;"></p>
         </div>
 
         <div id="broken-sentence" class="broken-sentence"></div>
-
-        <div id="target-area" class="english-area">ממתין למילים שלך...</div>
-        
+        <div id="target-area" class="english-area"></div>
         <div id="options" class="keyboard"></div>
-        
         <div id="feedback" class="feedback"></div>
         
         <div style="margin-top: 15px;">
-            <button class="btn" onclick="checkAnswer()">בדקי אותי! ✅</button>
-            <button class="btn" style="background:#b2bec3; box-shadow: none;" onclick="resetCurrent()">מחק הכל 🗑️</button>
+            <button class="btn" onclick="checkAnswer()">בדיקה ✅</button>
+            <button class="btn" style="background:#b2bec3;" onclick="clearAndLog()">מחיקה 🗑️</button>
         </div>
     </div>
 
     <div id="win-screen" class="hidden">
-        <h2 style="color: var(--primary); font-size: 3.5rem;">מיילי, את אלופה! 🏆</h2>
-        <p style="font-size: 1.5rem;">סיימת את כל השלבים בציון 100!</p>
-        <button class="btn" onclick="location.reload()">סיבוב ניצחון נוסף?</button>
+        <h2 style="color:var(--primary); font-size:3rem;">מיילי, את אלופה! 🏆</h2>
+        <p>הצלת את כל המשפטים!</p>
+        <button class="btn" onclick="location.reload()">שחקי שוב</button>
     </div>
 </div>
 
 <script>
     const cases = [
         { 
-            hint: "זכרי: YOU (אתה) מתחיל תמיד ב-Y", 
-            wrong: "uoy want a bag", 
-            correct: ["You", "want", "a", "bag"],
-            pool: ["You", "uoy", "want", "wont", "bag", "bad", "a"],
-            he: "אתה רוצה תיק",
-            level: "מתמחה"
-        },
-        { 
-            hint: "זכרי: ב-BAG (תיק) יש G בסוף כמו ידית!", 
-            wrong: "I want a big bad", 
-            correct: ["I", "want", "a", "big", "bag"],
-            pool: ["I", "want", "big", "bag", "bad", "a"],
-            he: "אני רוצה תיק גדול",
-            level: "מתמחה"
-        },
-        { 
-            hint: "חוק הצבע: קודם BLUE ואז SKY", 
-            wrong: "The is sky blue", 
+            he: "יש שמיים כחולים", 
+            wrong: "The is blue sky", 
             correct: ["There", "is", "a", "blue", "sky"],
             pool: ["There", "The", "is", "blue", "sky", "a"],
-            he: "יש שמיים כחולים",
-            level: "רופאה בכירה"
+            hint: "זכרי: THERE זה 'יש' (כי יש בו here!)",
+            level: "מומחית ל-There"
         },
         { 
-            hint: "זכרי: SCHOOL כותבים עם CH", 
-            wrong: "the scool is big", 
-            correct: ["The", "school", "is", "big"],
-            pool: ["The", "school", "scool", "is", "big"],
-            he: "בית הספר גדול",
-            level: "רופאה בכירה"
+            he: "אתה רוצה תיק בית ספר", 
+            wrong: "uoy wont a scool bad", 
+            correct: ["You", "want", "a", "school", "bag"],
+            pool: ["You", "uoy", "want", "wont", "school", "scool", "bag", "bad", "a"],
+            hint: "זכרי: Bag (תיק) מסתיים ב-G, ו-You מתחיל ב-Y",
+            level: "דוקטורית לאיות"
         },
         { 
-            hint: "משימה: ללבוש חולצה ורודה", 
-            wrong: "they want wear pink shirt", 
+            he: "הם רוצים ללבוש חולצה ורודה", 
+            wrong: "they wont wear pink shrit", 
             correct: ["They", "want", "to", "wear", "a", "pink", "shirt"],
-            pool: ["They", "want", "to", "wear", "a", "pink", "shirt", "shrit"],
-            he: "הם רוצים ללבוש חולצה ורודה",
+            pool: ["They", "want", "wear", "to", "a", "pink", "shirt", "shrit"],
+            hint: "זכרי: Shirt (חולצה) - ה-i באה לפני ה-r",
             level: "מנהלת מחלקה"
+        },
+        { 
+            he: "יש ענן לבן בשמיים", 
+            wrong: "The is white clowd", 
+            correct: ["There", "is", "a", "white", "cloud", "in", "the", "sky"],
+            pool: ["There", "The", "is", "white", "cloud", "clowd", "in", "the", "sky", "a"],
+            hint: "שילוב מנצח: There + Cloud",
+            level: "פרופסורית לאנגלית"
         }
     ];
 
@@ -134,14 +141,20 @@
 
     function toggleLog() { document.getElementById('log-panel').classList.toggle('open'); }
 
-    function addLog(status, userAns) {
+    function addLog(status, detail) {
         const time = new Date().toLocaleTimeString('he-IL');
-        const entry = `<div style="margin-bottom:8px;"><b>[${time}] ${cases[currentIdx].he}</b><br>תשובה: ${userAns} <span style="color:${status === 'נכון' ? 'green' : 'red'}">[${status}]</span></div>`;
+        const entry = `<div style="border-bottom:1px solid #eee; padding:5px;"><b>[${time}]</b> ${detail} <span style="color:${status==='V'?'green':'red'}">[${status}]</span></div>`;
         logData.unshift(entry);
-        document.getElementById('log-content').innerHTML = logData.join("<hr>");
+        document.getElementById('log-content').innerHTML = logData.join("");
     }
 
-    function superClean(str) { return str.toLowerCase().replace(/[^a-z]/g, "").trim(); }
+    function clearAndLog() {
+        if(built.length > 0) addLog("מחיקה", "מיילי מחקה את המשפט: " + built.join(" "));
+        built = [];
+        render();
+    }
+
+    function superClean(str) { return str.toLowerCase().replace(/[^a-z]/g, ""); }
 
     function initCase() {
         if (currentIdx >= cases.length) {
@@ -152,7 +165,7 @@
         const c = cases[currentIdx];
         document.getElementById('instruction-title').innerText = c.he;
         document.getElementById('hint-box').innerText = c.hint;
-        document.getElementById('level-name').innerText = c.level;
+        document.getElementById('level-title').innerText = "רמה: " + c.level;
         document.getElementById('broken-sentence').innerText = c.wrong;
         document.getElementById('progress-fill').style.width = ((currentIdx / cases.length) * 100) + "%";
         document.getElementById('feedback').innerText = "";
@@ -162,13 +175,12 @@
 
     function render() {
         const area = document.getElementById('target-area');
-        area.innerText = built.length === 0 ? "הקישי על המילים כאן למטה..." : built.join(" ");
-        area.style.color = built.length === 0 ? "#b2bec3" : "#2d3436";
+        area.innerText = built.length === 0 ? "הקישי על המילים..." : built.join(" ");
+        area.style.color = built.length === 0 ? "#ccc" : "#333";
         
         const options = document.getElementById('options');
         options.innerHTML = "";
-        const shuffledPool = [...cases[currentIdx].pool].sort(() => Math.random() - 0.5);
-        shuffledPool.forEach(word => {
+        [...cases[currentIdx].pool].sort(() => Math.random() - 0.5).forEach(word => {
             let k = document.createElement('div');
             k.className = 'key';
             k.innerText = word;
@@ -177,19 +189,17 @@
         });
     }
 
-    function resetCurrent() { built = []; render(); }
-
     function checkAnswer() {
         if (built.length === 0) return;
         const userAttempt = built.join(" ");
         if (superClean(userAttempt) === superClean(cases[currentIdx].correct.join(""))) {
-            addLog("נכון", userAttempt);
-            document.getElementById('feedback').innerHTML = "<span style='color:var(--primary)'>מיילי, את פשוט אלופה! ✨</span>";
+            addLog("V", "הצליחה: " + userAttempt);
+            document.getElementById('feedback').innerHTML = "<span style='color:var(--primary)'>מדהים, מיילי! ✨</span>";
             currentIdx++;
-            setTimeout(initCase, 1200);
+            setTimeout(initCase, 1000);
         } else {
-            addLog("טעות", userAttempt);
-            document.getElementById('feedback').innerHTML = "<span style='color:var(--danger)'>כמעט... נסי לתקן את האותיות!</span>";
+            addLog("X", "טעתה: " + userAttempt);
+            document.getElementById('feedback').innerHTML = "<span style='color:var(--danger)'>כמעט... תנסי שוב!</span>";
         }
     }
 
