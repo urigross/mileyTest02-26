@@ -3,35 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>מיילי: המרפאה למשפטים 8.0</title>
+    <title>מיילי: דוקטור לאנגלית 9.0</title>
     <style>
-        :root { --primary: #00b894; --secondary: #0984e3; --danger: #d63031; --bg: #f9f9f9; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; padding-top: env(safe-area-inset-top); display: flex; flex-direction: column; align-items: center; }
+        :root { --primary: #00b894; --secondary: #0984e3; --danger: #d63031; --bg: #fdfdfd; }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; 
+            padding-top: env(safe-area-inset-top); display: flex; flex-direction: column; align-items: center; 
+        }
         
         /* כפתור המבורגר מוסתר (לבן על לבן) */
-        #menu-btn { position: fixed; top: calc(10px + env(safe-area-inset-top)); right: 10px; font-size: 20px; background: white; color: #eee; border: none; padding: 10px; cursor: pointer; z-index: 1001; opacity: 0.3; }
+        #menu-btn { position: fixed; top: calc(10px + env(safe-area-inset-top)); right: 10px; font-size: 20px; background: white; color: #fdfdfd; border: none; padding: 10px; cursor: pointer; z-index: 1001; opacity: 0.1; }
 
         #log-panel { position: fixed; top: 0; right: -320px; width: 300px; height: 100%; background: white; box-shadow: -5px 0 15px rgba(0,0,0,0.1); transition: 0.4s; z-index: 1000; padding: 20px; overflow-y: auto; text-align: right; }
         #log-panel.open { right: 0; }
 
         #game-container { max-width: 850px; width: 92%; background: white; margin: 20px auto; padding: 25px; border-radius: 35px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; }
-        .header { background: linear-gradient(135deg, #00b894, #0984e3); color: white; padding: 20px; border-radius: 25px; margin-bottom: 20px; }
+        .header { background: linear-gradient(135deg, #6c5ce7, #a29bfe); color: white; padding: 20px; border-radius: 25px; margin-bottom: 20px; }
         
-        .progress-fill { height: 10px; background: #fdcb6e; width: 0%; transition: 0.5s; border-radius: 5px; }
+        .progress-fill { height: 10px; background: #55efc4; width: 0%; transition: 0.5s; border-radius: 5px; }
 
-        .instruction-box { background: #e3f2fd; padding: 15px; border-radius: 20px; margin-bottom: 15px; border-right: 6px solid var(--secondary); }
-        .broken-sentence { font-size: 1.8rem; color: var(--danger); text-decoration: underline wavy; font-weight: bold; margin: 15px 0; }
+        .instruction-box { background: #f0f3f7; padding: 15px; border-radius: 20px; margin-bottom: 15px; border-right: 6px solid #6c5ce7; }
+        .broken-sentence { font-size: 1.6rem; color: #b2bec3; font-style: italic; margin: 10px 0; }
 
-        /* שדה התשובה - מילים לחיצות למחיקה */
         .english-area { direction: ltr; font-size: 2rem; margin: 15px 0; padding: 20px; border: 3px dashed #ddd; border-radius: 20px; min-height: 80px; background: #fffde7; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 10px; }
-        .built-word { background: white; border: 2px solid var(--secondary); padding: 5px 12px; border-radius: 10px; cursor: pointer; transition: 0.2s; }
-        .built-word:hover { background: #fee; border-color: var(--danger); }
+        .built-word { background: white; border: 2px solid #6c5ce7; padding: 5px 12px; border-radius: 10px; cursor: pointer; transition: 0.2s; font-weight: bold; }
 
         .keyboard { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; direction: ltr; }
-        .key { background: white; border: 2px solid #ddd; padding: 12px 18px; font-size: 1.3rem; border-radius: 12px; cursor: pointer; font-weight: bold; color: #333; }
+        .key { background: white; border: 2px solid #eee; padding: 12px 18px; font-size: 1.3rem; border-radius: 12px; cursor: pointer; font-weight: bold; color: #333; box-shadow: 0 3px 0 #ddd; }
+        .key:active { transform: translateY(2px); box-shadow: none; }
         
         .feedback { font-size: 1.4rem; font-weight: bold; margin: 15px; min-height: 30px; }
-        .btn { background: var(--secondary); color: white; border: none; padding: 14px 30px; font-size: 1.1rem; border-radius: 15px; cursor: pointer; font-weight: bold; margin: 5px; }
+        .btn { background: #6c5ce7; color: white; border: none; padding: 14px 30px; font-size: 1.1rem; border-radius: 15px; cursor: pointer; font-weight: bold; margin: 5px; }
         .hidden { display: none; }
     </style>
 </head>
@@ -40,25 +42,24 @@
 <button id="menu-btn" onclick="toggleLog()">☰</button>
 
 <div id="log-panel">
-    <h3>📋 היומן של מיילי</h3>
-    <button class="btn" style="width:100%; margin-bottom:10px; background:var(--primary);" onclick="copyLog()">העתק לוג (Copy)</button>
-    <div id="log-content" style="font-size: 0.8rem; border-top: 1px solid #eee; padding-top:10px;"></div>
+    <h3>📋 היומן של מיילי - שלב 9</h3>
+    <button class="btn" style="width:100%; margin-bottom:10px; background:#00b894;" onclick="copyLog()">העתק לוג (Copy)</button>
+    <div id="log-content" style="font-size: 0.75rem; border-top: 1px solid #eee; padding-top:10px;"></div>
     <button class="btn" style="width:100%; margin-top:20px; background:#636e72;" onclick="toggleLog()">סגור</button>
 </div>
 
 <div id="game-container">
     <div class="header">
-        <h1 style="margin:0;">המרפאה של מיילי 🩺</h1>
+        <h1 style="margin:0;">המרפאה של מיילי: מומחית 🎓</h1>
         <div style="background:rgba(255,255,255,0.2); height:10px; border-radius:5px; margin-top:10px;"><div id="progress-fill" class="progress-fill"></div></div>
     </div>
 
     <div id="game-area">
         <div class="instruction-box">
             <p id="instruction-title" style="font-weight:bold; font-size:1.2rem; margin:0;"></p>
-            <p id="hint-box" style="color:var(--danger); font-size:1.1rem; margin:5px 0 0 0; font-weight:bold;"></p>
+            <p id="hint-box" style="color:#d63031; font-size:1rem; margin:5px 0 0 0;"></p>
         </div>
 
-        <div id="broken-sentence" class="broken-sentence"></div>
         <div id="target-area" class="english-area"></div>
         <div id="options" class="keyboard"></div>
         <div id="feedback" class="feedback"></div>
@@ -70,46 +71,50 @@
     </div>
 
     <div id="win-screen" class="hidden">
-        <h2 style="color:var(--primary); font-size:3rem;">מיילי, את אלופה! 🏆</h2>
-        <button class="btn" onclick="location.reload()">שחקי שוב</button>
+        <h2 style="color:#6c5ce7; font-size:3rem;">דוקטור מיילי, את גאווה! 🏆</h2>
+        <p>עברת את מבחן המומחים בהצלחה.</p>
+        <button class="btn" onclick="location.reload()">סיבוב נוסף?</button>
     </div>
 </div>
 
 <script>
     const cases = [
         { 
-            he: "יש שמיים כחולים", 
-            wrong: "The is sky blue", 
-            correct: ["There", "is", "a", "blue", "sky"],
-            pool: ["There", "The", "is", "blue", "sky", "a"],
-            hint: "חוק הצבע: קודם BLUE ואז SKY!" 
+            he: "אני רוצה שמלה ורודה", 
+            correct: ["I", "want", "a", "pink", "dress"],
+            pool: ["I", "want", "wont", "a", "pink", "dress", "drees"],
+            hint: "זכרי: הצבע ורוד (pink) בא לפני השמלה (dress)." 
         },
         { 
-            he: "אתה רוצה תיק", 
-            wrong: "uoy wont a bad", 
-            correct: ["You", "want", "a", "bag"],
-            pool: ["You", "uoy", "want", "wont", "bag", "bad", "a"],
-            hint: "זכרי: You (אתה) מתחיל ב-Y, תיק זה Bag (עם G!)"
+            he: "יש נעליים כחולות בחנות", 
+            correct: ["There", "are", "blue", "shoes", "in", "the", "store"],
+            pool: ["There", "The", "are", "is", "blue", "shoes", "in", "the", "store"],
+            hint: "זכרי: נעליים זה רבים, אז משתמשים ב-ARE."
         },
         { 
-            he: "בית הספר גדול", 
-            wrong: "The is school big", 
-            correct: ["The", "school", "is", "big"],
-            pool: ["The", "school", "is", "big"],
-            hint: "זכרי: School כותבים עם CH"
+            he: "אתה לובש גרביים קטנים", 
+            correct: ["You", "wear", "small", "socks"],
+            pool: ["You", "uoy", "wear", "small", "socks", "socs"],
+            hint: "זכרי: YOU (אתה) ו-SMALL (קטן) בא לפני הגרביים."
         },
         { 
-            he: "הם רוצים ללבוש חולצה ורודה", 
-            wrong: "they wont wear a shirt pink", 
-            correct: ["They", "want", "to", "wear", "a", "pink", "shirt"],
-            pool: ["They", "want", "to", "wear", "a", "pink", "shirt", "wont"],
-            hint: "זכרי: קודם הצבע PINK ואז SHIRT"
+            he: "יש ענן לבן גדול בשמיים", 
+            correct: ["There", "is", "a", "big", "white", "cloud", "in", "the", "sky"],
+            pool: ["There", "The", "is", "a", "big", "white", "cloud", "clowd", "sky"],
+            hint: "זכרי: קודם BIG (גדול) ואז CLOUD (ענן)."
+        },
+        { 
+            he: "אני לא רוצה מגפיים", 
+            correct: ["I", "don't", "want", "boots"],
+            pool: ["I", "don't", "dont", "want", "wont", "boots", "boots"],
+            hint: "אל תשכחי את הגרש (') ב-don't!"
         }
     ];
 
     let currentIdx = 0;
     let built = [];
     let logData = [];
+    let startTime = Date.now();
 
     function toggleLog() { document.getElementById('log-panel').classList.toggle('open'); }
 
@@ -119,9 +124,11 @@
     }
 
     function addLog(status, detail) {
-        const entry = `[${new Date().toLocaleTimeString('he-IL')}] ${cases[currentIdx].he}: ${detail} [${status}]`;
+        const duration = Math.round((Date.now() - startTime) / 1000);
+        const entry = `[${new Date().toLocaleTimeString('he-IL')}] ${cases[currentIdx].he}: ${detail} [${status}] (${duration} שניות)`;
         logData.unshift(entry);
         document.getElementById('log-content').innerHTML = logData.join("<br><hr>");
+        startTime = Date.now();
     }
 
     function removeWord(index) {
@@ -142,17 +149,17 @@
         const c = cases[currentIdx];
         document.getElementById('instruction-title').innerText = c.he;
         document.getElementById('hint-box').innerText = c.hint;
-        document.getElementById('broken-sentence').innerText = c.wrong;
         document.getElementById('progress-fill').style.width = ((currentIdx / cases.length) * 100) + "%";
         document.getElementById('feedback').innerText = "";
         built = [];
+        startTime = Date.now();
         render();
     }
 
     function render() {
         const area = document.getElementById('target-area');
         area.innerHTML = "";
-        if(built.length === 0) area.innerText = "לחצי על המילים למטה...";
+        if(built.length === 0) area.innerText = "הקישי על המילים...";
         else {
             built.forEach((word, i) => {
                 let span = document.createElement('span');
@@ -165,7 +172,8 @@
         
         const options = document.getElementById('options');
         options.innerHTML = "";
-        [...cases[currentIdx].pool].sort(() => Math.random() - 0.5).forEach(word => {
+        const currentPool = [...cases[currentIdx].pool].sort(() => Math.random() - 0.5);
+        currentPool.forEach(word => {
             let k = document.createElement('div');
             k.className = 'key';
             k.innerText = word;
@@ -184,7 +192,7 @@
             setTimeout(initCase, 1000);
         } else {
             addLog("טעות", userAttempt);
-            document.getElementById('feedback').innerHTML = "<span style='color:var(--danger)'>שימי לב לסדר המילים... נסי שוב!</span>";
+            document.getElementById('feedback').innerHTML = "<span style='color:var(--danger)'>כמעט... תבדקי שוב!</span>";
         }
     }
 
